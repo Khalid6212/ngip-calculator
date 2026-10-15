@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#123338">
+<meta name="format-detection" content="telephone=no">
+<title>Startup Scorecard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Questrial&family=Alexandria:wght@400;600&display=swap">
+<style>
+/* Falak Ventures brand. Layout: a pinned result bar (total, scale label, weighted bar), then eight criterion cards in weight order, each a 5-to-1 tap scale matching the workshop slide. */
+:root {
+  --bg: #efefef;          /* Starlight */
+  --card: #ffffff;
+  --ink: #123338;         /* Dark Nebula */
+  --ink-2: #3d5a5e;
+  --line: #c9d3d1;
+  --aqua: #00a86b;        /* Nebula Aqua */
+  --mint: #6de9c3;        /* Nebula Mint */
+  --lime: #e3fd72;        /* Lime Green */
+  --deep: #001410;        /* Dark Green */
+  --font: "Century Gothic", CenturyGothic, "URW Gothic", "URW Gothic L", Questrial, "Avenir Next", "Segoe UI", Roboto, Arial, sans-serif;
+  --font-ar: Alexandria, "Geeza Pro", "Noto Sans Arabic", Tahoma, sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+html, body { background: var(--bg); }
+body {
+  margin: 0; color: var(--ink); font-family: var(--font); font-size: 16px; line-height: 1.45;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: calc(20px + env(safe-area-inset-top, 0px)) calc(48px + env(safe-area-inset-bottom, 0px));
+  -webkit-tap-highlight-color: transparent;
+}
+.ar { font-family: var(--font-ar); }
+.wrap { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+.eyebrow { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; color: var(--aqua); }
+h1 { margin: 2px 0 0; font-size: clamp(24px, 4.4vw, 34px); line-height: 1.15; font-weight: 700; text-wrap: balance; }
+.lede { margin: 6px 0 0; color: var(--ink-2); max-width: 62ch; }
+
+/* Scale legend, same colours as the slide */
+.legend { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+.lg { border-radius: 10px; padding: 8px 4px; text-align: center; display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.lg b { font-size: 22px; line-height: 1.1; }
+.lg span { font-size: 12px; font-weight: 700; overflow-wrap: anywhere; }
+.lg i { font-style: normal; font-size: 12px; }
+.s5 { background: var(--aqua); color: var(--deep); }
+.s4 { background: var(--mint); color: var(--ink); }
+.s3 { background: #b9f5e2; color: var(--ink); }
+.s2 { background: #ffffff; color: var(--ink); box-shadow: inset 0 0 0 1px var(--line); }
+.s1 { background: var(--ink); color: var(--bg); }
+
+.name-row { display: flex; flex-direction: column; gap: 6px; }
+label, .lbl { font-size: 13px; font-weight: 700; color: var(--ink-2); }
+input[type=text], textarea {
+  -webkit-appearance: none; appearance: none; width: 100%; min-height: 48px;
+  font: 16px var(--font); color: var(--ink); background: var(--card);
+  border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px;
+}
+textarea { min-height: 80px; resize: vertical; line-height: 1.4; overflow: hidden; }
+input:focus-visible, textarea:focus-visible, button:focus-visible { outline: 2px solid var(--aqua); outline-offset: 2px; }
+
+/* Pinned result bar */
+.result {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  background: var(--ink); color: var(--bg); border-radius: 12px; padding: 12px 14px;
+  display: flex; flex-direction: column; gap: 8px; box-shadow: 0 8px 16px -10px rgba(0,20,16,.55);
+}
+.result-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.total { display: flex; align-items: baseline; gap: 6px; }
+.total strong { font-size: 40px; line-height: 1; color: var(--lime); font-variant-numeric: tabular-nums; }
+.total span { font-size: 14px; color: #bfd8d5; }
+.verdict { text-align: right; min-width: 0; }
+.verdict b { display: block; font-size: 17px; }
+.verdict .ar { font-size: 14px; color: var(--mint); }
+.verdict small { display: block; font-size: 12px; color: #bfd8d5; }
+.stack { display: flex; height: 12px; border-radius: 6px; overflow: hidden; background: #24484e; }
+.stack div { height: 100%; transition: width .2s; border-right: 1px solid var(--ink); }
+.stack div:last-child { border-right: 0; }
+.result-note { font-size: 12px; color: #bfd8d5; }
+
+/* Criterion cards */
+.crit { background: var(--card); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 10px; border: 1px solid transparent; }
+.crit.done { border-color: var(--line); }
+.crit-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.crit h2 { margin: 0; font-size: 18px; line-height: 1.25; }
+.crit h2 .ar { display: block; text-align: left; font-size: 14px; font-weight: 400; color: var(--ink-2); margin-top: 2px; }
+.weight { flex: none; font-size: 14px; font-weight: 700; background: var(--bg); border-radius: 999px; padding: 4px 10px; font-variant-numeric: tabular-nums; }
+.hint { margin: 0; font-size: 14px; color: var(--ink-2); }
+.scale { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+.scale button {
+  -webkit-appearance: none; appearance: none; min-height: 52px; border-radius: 10px; cursor: pointer;
+  font: 700 22px var(--font); color: var(--ink); background: var(--bg); border: 1px solid var(--line);
+  touch-action: manipulation; padding: 0;
+}
+.scale button[aria-pressed="true"].b5 { background: var(--aqua); color: var(--deep); border-color: var(--aqua); }
+.scale button[aria-pressed="true"].b4 { background: var(--mint); border-color: var(--mint); }
+.scale button[aria-pressed="true"].b3 { background: #b9f5e2; border-color: #8fe3c8; }
+.scale button[aria-pressed="true"].b2 { background: #ffffff; border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+.scale button[aria-pressed="true"].b1 { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.scale button[aria-pressed="true"] { transform: translateY(-1px); }
+.picked { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; font-size: 14px; min-height: 20px; }
+.picked .what { font-weight: 700; }
+.picked .what .ar { font-weight: 400; color: var(--ink-2); margin-left: 4px; }
+.picked .calc { font-variant-numeric: tabular-nums; color: var(--ink-2); white-space: nowrap; }
+.picked .calc b { color: var(--ink); }
+
+/* Wrap-up */
+.panel { background: var(--card); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+.panel h2 { margin: 0; font-size: 18px; }
+.table-box { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 7px 6px; border-bottom: 1px solid var(--bg); }
+th { font-size: 12px; color: var(--ink-2); text-transform: uppercase; letter-spacing: .06em; }
+td.n, th.n { text-align: right; }
+tfoot td { font-weight: 700; border-bottom: 0; border-top: 2px solid var(--ink); }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.btn { -webkit-appearance: none; appearance: none; min-height: 48px; border-radius: 8px; padding: 10px 16px; cursor: pointer; font: 700 15px var(--font); touch-action: manipulation; }
+.btn-main { background: var(--ink); color: var(--lime); border: 1px solid var(--ink); flex: 1 1 160px; }
+.btn-ghost { background: transparent; color: var(--ink); border: 1px solid var(--ink); flex: 1 1 160px; }
+.btn-quiet { background: transparent; color: var(--ink-2); border: 1px solid var(--line); font-size: 14px; }
+.status { font-size: 13px; min-height: 1em; color: var(--aqua); font-weight: 700; }
+.foot { font-size: 12px; color: var(--ink-2); margin: 0; }
+.nojs { background: var(--lime); color: var(--deep); border-radius: 10px; padding: 12px 14px; font-size: 14px; }
+.nojs b { display: block; font-size: 15px; }
+.nojs span { display: block; font-weight: 700; overflow-wrap: anywhere; margin-top: 4px; }
+@media (max-width: 560px) {
+  body { padding-block: calc(14px + env(safe-area-inset-top, 0px)) calc(40px + env(safe-area-inset-bottom, 0px)); }
+  .wrap { gap: 12px; }
+  .lg b { font-size: 18px; }
+  .lg span { font-size: 11px; }
+  .lg i { font-size: 11px; }
+  .total strong { font-size: 34px; }
+  .crit h2 { font-size: 17px; }
+}
+@media (hover: hover) { .scale button:hover { border-color: var(--ink); } .btn:hover { filter: brightness(1.08); } }
+@media (prefers-reduced-motion: reduce) { .stack div { transition: none; } .scale button[aria-pressed="true"] { transform: none; } }
+[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nojs" id="nojs" role="alert"><b>This copy can’t calculate.</b> The app you opened it in doesn’t run the scorecard. Open the live scorecard in Safari or Chrome instead:<span>https://khalid6212.github.io/ngip-calculator/scorecard/</span></div>
+
+  <header>
+    <div class="eyebrow">Module 8 · Exercise Two</div>
+    <h1>Score the startup</h1>
+    <p class="lede">Rate each of the eight criteria from 1 to 5. Each score is multiplied by its weight and added up, giving a result out of 5.</p>
+  </header>
+
+  <div class="legend" aria-label="Scoring scale">
+    <div class="lg s5"><b>5</b><span>Exceptional</span><i class="ar">ممتاز</i></div>
+    <div class="lg s4"><b>4</b><span>Strong</span><i class="ar">جيد</i></div>
+    <div class="lg s3"><b>3</b><span>Moderate</span><i class="ar">مقبول</i></div>
+    <div class="lg s2"><b>2</b><span>Weak</span><i class="ar">ضعيف</i></div>
+    <div class="lg s1"><b>1</b><span>Very weak</span><i class="ar">ضعيف جداً</i></div>
+  </div>
+
+  <div class="name-row">
+    <label for="startup">Startup you are scoring</label>
+    <input id="startup" type="text" value="PaySahel" autocomplete="off" enterkeyhint="done">
+  </div>
+
+  <section class="result" aria-live="polite" aria-label="Weighted score">
+    <div class="result-top">
+      <div class="total"><strong id="total">–</strong><span>out of 5</span></div>
+      <div class="verdict"><b id="v-en">Not scored yet</b><span class="ar" id="v-ar"></span><small id="v-count">0 of 8 scored</small></div>
+    </div>
+    <div class="stack" id="stack" aria-hidden="true"></div>
+    <div class="result-note" id="note">Tap a score on each card below.</div>
+  </section>
+
+  <div id="cards"></div>
+
+  <section class="panel">
+    <h2>Your verdict</h2>
+    <div class="name-row">
+      <label for="strength">Biggest strength</label>
+      <textarea id="strength" rows="2" placeholder="What would make you invest?"></textarea>
+    </div>
+    <div class="name-row">
+      <label for="concern">Biggest concern</label>
+      <textarea id="concern" rows="2" placeholder="What would you ask the founders first?"></textarea>
+    </div>
+    <div class="table-box">
+      <table>
+        <thead><tr><th>Criterion</th><th class="n">Score</th><th class="n">Weight</th><th class="n">Points</th></tr></thead>
+        <tbody id="tbody"></tbody>
+        <tfoot><tr><td>Total</td><td></td><td class="n">100%</td><td class="n" id="tfoot">–</td></tr></tfoot>
+      </table>
+    </div>
+    <div class="row">
+      <button type="button" class="btn btn-main" id="copy">Copy my scorecard</button>
+      <button type="button" class="btn btn-ghost" id="example">Load worked example</button>
+    </div>
+    <div class="status" id="status" role="status"></div>
+    <textarea id="copybox" aria-label="Scorecard text" readonly hidden></textarea>
+  </section>
+
+  <div class="row" style="justify-content:space-between">
+    <p class="foot">Scores are your own judgement on a simulated deck. The scorecard is a teaching aid, not investment advice.</p>
+    <button type="button" class="btn btn-quiet" id="reset">Clear all scores</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  try { $("nojs").hidden = true; } catch (e) {}
+
+  var CRIT = [
+    { id: "team",  en: "Team", ar: "الفريق", w: 20, hint: "Founders’ experience, a complete team, and full-time commitment." },
+    { id: "prob",  en: "Problem & Solution", ar: "المشكلة والحل", w: 15, hint: "Is the pain real and frequent, and does the solution clearly fix it?" },
+    { id: "mkt",   en: "Market & Traction", ar: "السوق والنمو", w: 15, hint: "Size and growth of the market, and proof that customers want it." },
+    { id: "unit",  en: "Unit economics", ar: "اقتصاديات الوحدة", w: 15, hint: "Does each customer make money? Margins, CAC against lifetime value." },
+    { id: "prod",  en: "Product", ar: "المنتج", w: 10, hint: "Quality, how far along it is, and what makes it different." },
+    { id: "bm",    en: "Business model & Competition", ar: "نموذج العمل والمنافسة", w: 10, hint: "How it earns money, and how it wins against the alternatives." },
+    { id: "def",   en: "Defensibility", ar: "القدرة على الحماية", w: 10, hint: "What stops others copying it: data, network, licences, brand." },
+    { id: "fin",   en: "Financial & Valuation", ar: "المالية والتقييم", w: 5, hint: "Are the projections credible and the asking valuation fair?" }
+  ];
+  var LABEL = { 5: ["Exceptional", "ممتاز"], 4: ["Strong", "جيد"], 3: ["Moderate", "مقبول"], 2: ["Weak", "ضعيف"], 1: ["Very weak", "ضعيف جداً"] };
+  var COLOR = { 5: "#00a86b", 4: "#6de9c3", 3: "#b9f5e2", 2: "#ffffff", 1: "#7f9a9d" };
+  var EXAMPLE = { team: 4, prob: 3, mkt: 2, unit: 2, prod: 4, bm: 3, def: 3, fin: 3 };
+  var KEY = "ngip-scorecard-v1";
+  var scores = {};
+
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function fix2(n) { return (Math.round(n * 100) / 100).toFixed(2); }
+  function fix1(n) { return (Math.round(n * 10) / 10).toFixed(1); }
+
+  // Build the eight cards once
+  var html = "";
+  for (var i = 0; i < CRIT.length; i++) {
+    var c = CRIT[i], btns = "";
+    for (var s = 5; s >= 1; s--) {
+      btns += '<button type="button" class="b' + s + '" data-c="' + c.id + '" data-s="' + s + '" aria-pressed="false" aria-label="' + esc(c.en) + ': ' + s + ', ' + LABEL[s][0] + '">' + s + '</button>';
+    }
+    html += '<section class="crit" id="card-' + c.id + '">' +
+      '<div class="crit-head"><h2>' + esc(c.en) + '<span class="ar" lang="ar" dir="rtl">' + c.ar + '</span></h2><span class="weight">' + c.w + '%</span></div>' +
+      '<p class="hint">' + esc(c.hint) + '</p>' +
+      '<div class="scale" role="group" aria-label="Score for ' + esc(c.en) + '">' + btns + '</div>' +
+      '<div class="picked" id="pick-' + c.id + '"><span class="what">Not scored</span><span class="calc"></span></div>' +
+      '</section>';
+  }
+  $("cards").innerHTML = html;
+  $("cards").style.display = "flex"; $("cards").style.flexDirection = "column"; $("cards").style.gap = "12px";
+
+  function render() {
+    var total = 0, n = 0, rows = "", bars = "";
+    for (var i = 0; i < CRIT.length; i++) {
+      var c = CRIT[i], v = scores[c.id] || 0, pts = v * c.w / 100;
+      var btns = $("card-" + c.id).getElementsByTagName("button");
+      for (var b = 0; b < btns.length; b++) btns[b].setAttribute("aria-pressed", String(+btns[b].getAttribute("data-s") === v));
+      $("card-" + c.id).className = "crit" + (v ? " done" : "");
+      var pick = $("pick-" + c.id);
+      if (v) {
+        n++; total += pts;
+        pick.innerHTML = '<span class="what">' + v + ' · ' + LABEL[v][0] + '<span class="ar" lang="ar">' + LABEL[v][1] + '</span></span><span class="calc">' + v + ' × ' + c.w + '% = <b>' + fix2(pts) + '</b></span>';
+        bars += '<div style="width:' + (pts / 5 * 100) + '%;background:' + COLOR[v] + '" title="' + esc(c.en) + '"></div>';
+      } else {
+        pick.innerHTML = '<span class="what">Not scored</span><span class="calc">max ' + fix2(5 * c.w / 100) + '</span>';
+      }
+      rows += '<tr><td>' + esc(c.en) + '</td><td class="n">' + (v || "–") + '</td><td class="n">' + c.w + '%</td><td class="n">' + (v ? fix2(pts) : "–") + '</td></tr>';
+    }
+    $("tbody").innerHTML = rows;
+    $("stack").innerHTML = bars;
+    $("v-count").textContent = n + " of 8 scored";
+    if (n === 0) {
+      $("total").textContent = "–"; $("v-en").textContent = "Not scored yet"; $("v-ar").textContent = "";
+      $("note").textContent = "Tap a score on each card below."; $("tfoot").textContent = "–";
+    } else {
+      $("total").textContent = fix1(total);
+      $("tfoot").textContent = fix2(total);
+      if (n === 8) {
+        var band = Math.min(5, Math.max(1, Math.round(total)));
+        $("v-en").textContent = LABEL[band][0]; $("v-ar").textContent = LABEL[band][1];
+        $("note").textContent = "Complete. " + fix2(total) + " out of 5 rounds to " + band + ", " + LABEL[band][0] + ".";
+      } else {
+        $("v-en").textContent = "In progress"; $("v-ar").textContent = "";
+        $("note").textContent = (8 - n) + " to go. Unscored criteria count as zero until you score them.";
+      }
+    }
+    save();
+  }
+
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify({ s: scores, name: $("startup").value, st: $("strength").value, co: $("concern").value })); } catch (e) {}
+  }
+  function restore() {
+    try {
+      var o = JSON.parse(localStorage.getItem(KEY) || "null"); if (!o) return;
+      if (o.s) scores = o.s;
+      if (typeof o.name === "string") $("startup").value = o.name;
+      if (o.st) $("strength").value = o.st;
+      if (o.co) $("concern").value = o.co;
+    } catch (e) {}
+  }
+  function grow(el) { el.style.height = "auto"; el.style.height = (el.scrollHeight + 2) + "px"; }
+
+  // One listener for all 40 buttons; tapping the chosen score again clears it
+  $("cards").addEventListener("click", function (e) {
+    var t = e.target;
+    while (t && t !== this && !t.getAttribute("data-c")) t = t.parentNode;
+    if (!t || t === this) return;
+    var id = t.getAttribute("data-c"), v = +t.getAttribute("data-s");
+    if (scores[id] === v) delete scores[id]; else scores[id] = v;
+    $("status").textContent = "";
+    render();
+  });
+
+  ["startup", "strength", "concern"].forEach(function (id) {
+    $(id).addEventListener("input", function () { if (id !== "startup") grow($(id)); save(); });
+  });
+
+  $("example").addEventListener("click", function () {
+    scores = {}; for (var k in EXAMPLE) scores[k] = EXAMPLE[k];
+    $("status").textContent = "Worked example loaded: made-up scores that total 3.0.";
+    render();
+  });
+  $("reset").addEventListener("click", function () {
+    scores = {}; $("strength").value = ""; $("concern").value = ""; grow($("strength")); grow($("concern"));
+    $("status").textContent = "";
+    render();
+  });
+
+  function summary() {
+    var total = 0, n = 0, lines = [];
+    for (var i = 0; i < CRIT.length; i++) {
+      var c = CRIT[i], v = scores[c.id] || 0;
+      if (v) { n++; total += v * c.w / 100; }
+      lines.push(c.en + ": " + (v ? v + " (" + LABEL[v][0] + ")" : "not scored") + " × " + c.w + "%");
+    }
+    var name = $("startup").value.trim() || "Startup";
+    var head = name + " · weighted score " + fix1(total) + " / 5" + (n === 8 ? " (" + LABEL[Math.min(5, Math.max(1, Math.round(total)))][0] + ")" : " (" + n + " of 8 scored)");
+    var out = head + "\n" + lines.join("\n");
+    if ($("strength").value.trim()) out += "\nBiggest strength: " + $("strength").value.trim();
+    if ($("concern").value.trim()) out += "\nBiggest concern: " + $("concern").value.trim();
+    return out;
+  }
+  $("copy").addEventListener("click", function () {
+    var text = summary(), st = $("status");
+    function fallback() {
+      var box = $("copybox"); box.hidden = false; box.value = text; grow(box);
+      box.focus(); box.setSelectionRange(0, text.length);
+      var ok = false; try { ok = document.execCommand("copy"); } catch (e) {}
+      st.textContent = ok ? "Copied. Paste it into the group chat." : "Selected below. Tap Copy in the menu.";
+    }
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function () { st.textContent = "Copied. Paste it into the group chat."; }, fallback);
+      } else fallback();
+    } catch (e) { fallback(); }
+  });
+
+  restore();
+  render();
+  grow($("strength")); grow($("concern"));
+})();
+</script>
+</body>
+</html>
