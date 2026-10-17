@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Questrial&family=Alexandria:wght@400;600&display=swap">
 <style>
-/* Falak Ventures brand. Layout: a pinned result bar (total, scale label, weighted bar), then eight criterion cards in weight order, each a 5-to-1 tap scale matching the workshop slide. */
+/* Falak Ventures brand. Layout: a pinned result bar (total, scale label, weighted bar), then six criterion cards in weight order, each a 5-to-1 tap scale matching the workshop slide. */
 :root {
   --bg: #efefef;          /* Starlight */
   --card: #ffffff;
@@ -149,7 +149,7 @@ tfoot td { font-weight: 700; border-bottom: 0; border-top: 2px solid var(--ink);
   <header>
     <div class="eyebrow">Module 8 · Exercise Two</div>
     <h1>Score the startup</h1>
-    <p class="lede">Rate each of the eight criteria from 1 to 5. Each score is multiplied by its weight and added up, giving a result out of 5.</p>
+    <p class="lede">Rate each of the six criteria from 1 to 5. Each score is multiplied by its weight and added up, giving a result out of 5.</p>
   </header>
 
   <div class="legend" aria-label="Scoring scale">
@@ -168,7 +168,7 @@ tfoot td { font-weight: 700; border-bottom: 0; border-top: 2px solid var(--ink);
   <section class="result" aria-live="polite" aria-label="Weighted score">
     <div class="result-top">
       <div class="total"><strong id="total">–</strong><span>out of 5</span></div>
-      <div class="verdict"><b id="v-en">Not scored yet</b><span class="ar" id="v-ar"></span><small id="v-count">0 of 8 scored</small></div>
+      <div class="verdict"><b id="v-en">Not scored yet</b><span class="ar" id="v-ar"></span><small id="v-count">0 of 6 scored</small></div>
     </div>
     <div class="stack" id="stack" aria-hidden="true"></div>
     <div class="result-note" id="note">Tap a score on each card below.</div>
@@ -213,26 +213,24 @@ tfoot td { font-weight: 700; border-bottom: 0; border-top: 2px solid var(--ink);
   try { $("nojs").hidden = true; } catch (e) {}
 
   var CRIT = [
-    { id: "team",  en: "Team", ar: "الفريق", w: 20, hint: "Founders’ experience, a complete team, and full-time commitment." },
-    { id: "prob",  en: "Problem & Solution", ar: "المشكلة والحل", w: 15, hint: "Is the pain real and frequent, and does the solution clearly fix it?" },
-    { id: "mkt",   en: "Market & Traction", ar: "السوق والنمو", w: 15, hint: "Size and growth of the market, and proof that customers want it." },
-    { id: "unit",  en: "Unit economics", ar: "اقتصاديات الوحدة", w: 15, hint: "Does each customer make money? Margins, CAC against lifetime value." },
-    { id: "prod",  en: "Product", ar: "المنتج", w: 10, hint: "Quality, how far along it is, and what makes it different." },
-    { id: "bm",    en: "Business model & Competition", ar: "نموذج العمل والمنافسة", w: 10, hint: "How it earns money, and how it wins against the alternatives." },
-    { id: "def",   en: "Defensibility", ar: "القدرة على الحماية", w: 10, hint: "What stops others copying it: data, network, licences, brand." },
-    { id: "fin",   en: "Financial & Valuation", ar: "المالية والتقييم", w: 5, hint: "Are the projections credible and the asking valuation fair?" }
+    { id: "team", en: "Team", ar: "الفريق", w: 22.5, hint: "Founders, fit and coachability: experience, a complete team, full-time commitment." },
+    { id: "prob", en: "Problem and market", ar: "المشكلة والسوق", w: 15, hint: "Is the problem real, costly and frequent, and is the market big enough?" },
+    { id: "trac", en: "Traction", ar: "الزخم والنمو", w: 15, hint: "Paying customers rather than pilots, and do they keep coming back?" },
+    { id: "unit", en: "Unit economics", ar: "اقتصاديات الوحدة", w: 10, hint: "Contribution margin and payback: does each customer make money?" },
+    { id: "moat", en: "Moat and defensibility", ar: "الميزة التنافسية والحماية", w: 22.5, hint: "Switching costs, stickiness and data: what stops others copying it?" },
+    { id: "bm", en: "Business model", ar: "نموذج العمل", w: 15, hint: "How it earns money, and how that scales." }
   ];
   var LABEL = { 5: ["Exceptional", "ممتاز"], 4: ["Strong", "جيد"], 3: ["Moderate", "مقبول"], 2: ["Weak", "ضعيف"], 1: ["Very weak", "ضعيف جداً"] };
   var COLOR = { 5: "#00a86b", 4: "#6de9c3", 3: "#b9f5e2", 2: "#ffffff", 1: "#7f9a9d" };
-  var EXAMPLE = { team: 4, prob: 3, mkt: 2, unit: 2, prod: 4, bm: 3, def: 3, fin: 3 };
-  var KEY = "ngip-scorecard-v1";
+  var EXAMPLE = { team: 4, prob: 3, trac: 2, unit: 2, moat: 3, bm: 3 };
+  var KEY = "ngip-scorecard-v2";
   var scores = {};
 
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
   function fix2(n) { return (Math.round(n * 100) / 100).toFixed(2); }
   function fix1(n) { return (Math.round(n * 10) / 10).toFixed(1); }
 
-  // Build the eight cards once
+  // Build the cards once
   var html = "";
   for (var i = 0; i < CRIT.length; i++) {
     var c = CRIT[i], btns = "";
@@ -268,20 +266,20 @@ tfoot td { font-weight: 700; border-bottom: 0; border-top: 2px solid var(--ink);
     }
     $("tbody").innerHTML = rows;
     $("stack").innerHTML = bars;
-    $("v-count").textContent = n + " of 8 scored";
+    $("v-count").textContent = n + " of " + CRIT.length + " scored";
     if (n === 0) {
       $("total").textContent = "–"; $("v-en").textContent = "Not scored yet"; $("v-ar").textContent = "";
       $("note").textContent = "Tap a score on each card below."; $("tfoot").textContent = "–";
     } else {
       $("total").textContent = fix1(total);
       $("tfoot").textContent = fix2(total);
-      if (n === 8) {
+      if (n === CRIT.length) {
         var band = Math.min(5, Math.max(1, Math.round(total)));
         $("v-en").textContent = LABEL[band][0]; $("v-ar").textContent = LABEL[band][1];
         $("note").textContent = "Complete. " + fix2(total) + " out of 5 rounds to " + band + ", " + LABEL[band][0] + ".";
       } else {
         $("v-en").textContent = "In progress"; $("v-ar").textContent = "";
-        $("note").textContent = (8 - n) + " to go. Unscored criteria count as zero until you score them.";
+        $("note").textContent = (CRIT.length - n) + " to go. Unscored criteria count as zero until you score them.";
       }
     }
     save();
@@ -318,7 +316,7 @@ tfoot td { font-weight: 700; border-bottom: 0; border-top: 2px solid var(--ink);
 
   $("example").addEventListener("click", function () {
     scores = {}; for (var k in EXAMPLE) scores[k] = EXAMPLE[k];
-    $("status").textContent = "Worked example loaded: made-up scores that total 3.0.";
+    $("status").textContent = "Worked example loaded: made-up scores that total about 3.0.";
     render();
   });
   $("reset").addEventListener("click", function () {
@@ -335,7 +333,7 @@ tfoot td { font-weight: 700; border-bottom: 0; border-top: 2px solid var(--ink);
       lines.push(c.en + ": " + (v ? v + " (" + LABEL[v][0] + ")" : "not scored") + " × " + c.w + "%");
     }
     var name = $("startup").value.trim() || "Startup";
-    var head = name + " · weighted score " + fix1(total) + " / 5" + (n === 8 ? " (" + LABEL[Math.min(5, Math.max(1, Math.round(total)))][0] + ")" : " (" + n + " of 8 scored)");
+    var head = name + " · weighted score " + fix1(total) + " / 5" + (n === CRIT.length ? " (" + LABEL[Math.min(5, Math.max(1, Math.round(total)))][0] + ")" : " (" + n + " of " + CRIT.length + " scored)");
     var out = head + "\n" + lines.join("\n");
     if ($("strength").value.trim()) out += "\nBiggest strength: " + $("strength").value.trim();
     if ($("concern").value.trim()) out += "\nBiggest concern: " + $("concern").value.trim();
